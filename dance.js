@@ -79,45 +79,66 @@ function wait(ms) {
 
 // ── Main choreography ────────────────────────────────────────
 async function startDance() {
-  const introEasing = 'cubic-bezier(0.2, 0.82, 0.18, 1)';
-  const introFadeDuration = 1800;
   const robotWidth = 120;
   const robotHeight = 160;
   const robotBaselineLift = Math.round(robotHeight * 0.5);
 
-  // Create and position the stage
+  // Create and position the stage — visible from the start (behind curtains)
   const stageScene = createRobotTransitionScene();
   positionRobotTransitionScene(stageScene);
-  stageScene.style.opacity = '0';
-  stageScene.style.transform = 'translateY(18px)';
+  stageScene.style.opacity = '1';
+  stageScene.style.transform = 'translateY(0)';
   document.body.appendChild(stageScene);
 
   // Position robot near the bottom of the viewport, above the stage floor.
-  const danceBaselineY = window.innerHeight - 24 - robotHeight - robotBaselineLift;
-  const startX = window.innerWidth * 0.15;
+  const fullBottomGap = 24 + robotBaselineLift;
+  const danceBaselineY = window.innerHeight - Math.round(fullBottomGap / 2) - robotHeight;
+  const startX = window.innerWidth * 0.20;
 
+  // Robot visible and stationary from the start (behind curtains)
   const robot = createRobotElement();
   robot.style.left = startX + 'px';
   robot.style.top = danceBaselineY + 'px';
-  robot.style.opacity = '0';
-  robot.style.transform = 'translateX(-50%) translateY(20px)';
+  robot.style.opacity = '1';
+  robot.style.transform = 'translateX(-50%)';
   document.body.appendChild(robot);
 
-  // Force layout
-  void stageScene.offsetWidth;
-  void robot.offsetWidth;
+  // ── Curtain opening ──────────────────────────────────────────
+  const curtainLeft = document.createElement('div');
+  curtainLeft.className = 'curtain curtain-left';
+  const curtainRight = document.createElement('div');
+  curtainRight.className = 'curtain curtain-right';
+  document.body.appendChild(curtainLeft);
+  document.body.appendChild(curtainRight);
 
-  // Fade in stage + robot
-  stageScene.style.transition = `opacity ${introFadeDuration}ms ${introEasing}, transform ${introFadeDuration}ms ${introEasing}`;
-  stageScene.style.opacity = '1';
-  stageScene.style.transform = 'translateY(0)';
-  robot.style.transition = `opacity ${introFadeDuration}ms ${introEasing}, transform ${introFadeDuration}ms ${introEasing}`;
-  robot.style.opacity = '1';
-  robot.style.transform = 'translateX(-50%) translateY(0)';
-  await wait(introFadeDuration);
+  // Force layout
+  void curtainLeft.offsetWidth;
+
+  // Shrink curtains from 50vw to 20px over 6 seconds
+  const curtainOpenDuration = 6000;
+  const curtainFadeDuration = 400;
+  curtainLeft.style.transition = `width ${curtainOpenDuration}ms ease-in-out`;
+  curtainRight.style.transition = `width ${curtainOpenDuration}ms ease-in-out`;
+  curtainLeft.style.width = '20px';
+  curtainRight.style.width = '20px';
+
+  await wait(curtainOpenDuration);
+
+  // Quickly fade out the remaining 20px slivers (non-blocking — dance starts now)
+  curtainLeft.style.transition = `opacity ${curtainFadeDuration}ms ease-out`;
+  curtainRight.style.transition = `opacity ${curtainFadeDuration}ms ease-out`;
+  curtainLeft.style.opacity = '0';
+  curtainRight.style.opacity = '0';
+  wait(curtainFadeDuration).then(() => {
+    curtainLeft.remove();
+    curtainRight.remove();
+  });
 
   // ── Phase 2: Cross-screen dance ──────────────────────────
-  const targetX = window.innerWidth * 0.85;
+  // Shift target right by same offset; clamp so climb stays ≥5% from right edge
+  const desiredTargetX = window.innerWidth * 0.90;
+  const maxTargetX = window.innerWidth * 0.95;
+  const targetX = Math.min(desiredTargetX, maxTargetX);
   const danceStartX = startX;
   const dx = targetX - danceStartX;
   const distance = Math.abs(dx);

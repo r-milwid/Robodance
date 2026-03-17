@@ -18,6 +18,26 @@ html, body {
   font-family: var(--font);
 }
 
+/* ── Curtain opening ───────────────────────────────────────────── */
+.curtain {
+  position: fixed;
+  top: 0;
+  height: 100vh;
+  width: 50vw;
+  z-index: 300;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  pointer-events: none;
+}
+.curtain-left {
+  left: 0;
+  background-image: url('assets/Curtain Left.png');
+}
+.curtain-right {
+  right: 0;
+  background-image: url('assets/Curtain Right.png');
+}
+
 /* ── Robot runner animation ──────────────────────────────────── */
 .robot-transition-scene {
   position: fixed;
