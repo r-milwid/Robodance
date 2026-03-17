@@ -44,9 +44,9 @@ html, body {
   position: fixed;
   z-index: 200;
   pointer-events: none;
-  width: 60px;
-  height: 80px;
-  --robot-scale: 1.25;
+  width: 120px;
+  height: 160px;
+  --robot-scale: 2.5;
   --robot-shell: #394254;
   --robot-shell-mid: #556176;
   --robot-limb: #5d687c;

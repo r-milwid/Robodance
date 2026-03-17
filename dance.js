@@ -81,8 +81,8 @@ function wait(ms) {
 async function startDance() {
   const introEasing = 'cubic-bezier(0.2, 0.82, 0.18, 1)';
   const introFadeDuration = 1800;
-  const robotWidth = 60;
-  const robotHeight = 80;
+  const robotWidth = 120;
+  const robotHeight = 160;
   const robotBaselineLift = Math.round(robotHeight * 0.5);
 
   // Create and position the stage
