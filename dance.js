@@ -33,7 +33,7 @@ function createRobotTransitionScene() {
 function positionRobotTransitionScene(scene) {
   if (!scene) return;
   const width = window.innerWidth;
-  const height = Math.max(170, Math.min(320, Math.round(width * (500 / 1668))));
+  const height = window.innerHeight;
   scene.style.left = '0px';
   scene.style.right = '0px';
   scene.style.width = width + 'px';
