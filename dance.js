@@ -233,14 +233,15 @@ async function startDance() {
   setRobotSpeech(robot, '');
 
   // ── Phase 4: Finale ──────────────────────────────────────
-  const finaleDanceDuration = 1200;
+  const finaleDanceDuration = 2000;
   setRobotMotion(robot, 'freestyling');
   await wait(finaleDanceDuration);
 
   // Second speech bubble — encourage questions
+  const secondSpeechDuration = 2500;
   setRobotMotion(robot, null);
   setRobotSpeech(robot, 'Ask questions in\nthe chat to the right');
-  await wait(speechDuration);
+  await wait(secondSpeechDuration);
   setRobotSpeech(robot, '');
 
   setRobotMotion(robot, 'waving');
