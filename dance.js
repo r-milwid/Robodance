@@ -237,6 +237,12 @@ async function startDance() {
   setRobotMotion(robot, 'freestyling');
   await wait(finaleDanceDuration);
 
+  // Second speech bubble — encourage questions
+  setRobotMotion(robot, null);
+  setRobotSpeech(robot, 'Ask questions in\nthe chat to the right');
+  await wait(speechDuration);
+  setRobotSpeech(robot, '');
+
   setRobotMotion(robot, 'waving');
   await wait(1500); // 3 waves at 0.5s each
 
