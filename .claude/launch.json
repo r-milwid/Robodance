@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "robodance",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["serve", "-l", "8891"],
+      "port": 8891
+    }
+  ]
+}
