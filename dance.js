@@ -240,22 +240,32 @@ async function startDance() {
   setRobotMotion(robot, 'waving');
   await wait(1500); // 3 waves at 0.5s each
 
-  // ── Outro: Fade out ──────────────────────────────────────
-  const outroDuration = 1200;
+  // ── Outro: Curtains close ────────────────────────────────
   setRobotMotion(robot, null);
   setRobotSpeech(robot, '');
 
-  stageScene.style.transition = `opacity ${outroDuration}ms ease-in, transform ${outroDuration}ms ease-in`;
-  stageScene.style.opacity = '0';
-  stageScene.style.transform = 'translateY(18px)';
+  const closeCurtainLeft = document.createElement('div');
+  closeCurtainLeft.className = 'curtain curtain-left';
+  closeCurtainLeft.style.width = '20px';
+  const closeCurtainRight = document.createElement('div');
+  closeCurtainRight.className = 'curtain curtain-right';
+  closeCurtainRight.style.width = '20px';
+  document.body.appendChild(closeCurtainLeft);
+  document.body.appendChild(closeCurtainRight);
 
-  robot.style.transition = `opacity ${outroDuration}ms ease-in, transform ${outroDuration}ms ease-in`;
-  robot.style.opacity = '0';
-  robot.style.transform = 'translateX(-50%) scale(0.5) translateY(10px)';
+  // Force layout
+  void closeCurtainLeft.offsetWidth;
 
-  await wait(outroDuration);
+  // Grow curtains from 20px back to 50vw over 6 seconds
+  const curtainCloseDuration = 6000;
+  closeCurtainLeft.style.transition = `width ${curtainCloseDuration}ms ease-in-out`;
+  closeCurtainRight.style.transition = `width ${curtainCloseDuration}ms ease-in-out`;
+  closeCurtainLeft.style.width = '50vw';
+  closeCurtainRight.style.width = '50vw';
 
-  // Cleanup
+  await wait(curtainCloseDuration);
+
+  // Cleanup (everything is hidden behind curtains now)
   stageScene.remove();
   robot.remove();
 }
