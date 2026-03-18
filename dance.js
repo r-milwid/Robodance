@@ -82,13 +82,9 @@ async function startDance() {
   const robotBaselineLift = Math.round(robotHeight * 0.5);
 
   // ── Curtain opening ──────────────────────────────────────────
-  // Curtains appended FIRST so they cover the viewport before robot/stage render
-  const curtainLeft = document.createElement('div');
-  curtainLeft.className = 'curtain curtain-left';
-  const curtainRight = document.createElement('div');
-  curtainRight.className = 'curtain curtain-right';
-  document.body.appendChild(curtainLeft);
-  document.body.appendChild(curtainRight);
+  // Curtains are in the HTML so they're visible immediately (no flash on load)
+  const curtainLeft = document.querySelector('.curtain-left');
+  const curtainRight = document.querySelector('.curtain-right');
 
   // Create and position the stage — visible from the start (behind curtains)
   const stageScene = createRobotTransitionScene();
@@ -279,8 +275,8 @@ async function startDance() {
   const curtainCloseDuration = 6000;
   closeCurtainLeft.style.transition = `width ${curtainCloseDuration}ms ease-in-out`;
   closeCurtainRight.style.transition = `width ${curtainCloseDuration}ms ease-in-out`;
-  closeCurtainLeft.style.width = '50vw';
-  closeCurtainRight.style.width = '50vw';
+  closeCurtainLeft.style.width = '50%';
+  closeCurtainRight.style.width = '50%';
 
   await wait(curtainCloseDuration);
 
