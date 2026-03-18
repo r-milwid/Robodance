@@ -17,10 +17,13 @@ html, body {
   background: #1B1D28;
   font-family: var(--font);
 }
+body {
+  position: relative; /* containing block for absolute children (needed for iframe compat) */
+}
 
 /* ── Curtain opening ───────────────────────────────────────────── */
 .curtain {
-  position: fixed;
+  position: absolute;
   top: 0;
   height: 100%;
   width: 50%;
@@ -40,7 +43,7 @@ html, body {
 
 /* ── Robot runner animation ──────────────────────────────────── */
 .robot-transition-scene {
-  position: fixed;
+  position: absolute;
   bottom: 0;
   left: 0;
   right: 0;
@@ -61,7 +64,7 @@ html, body {
   background-repeat: no-repeat;
 }
 .robot-runner {
-  position: fixed;
+  position: absolute;
   z-index: 200;
   pointer-events: none;
   width: 120px;
