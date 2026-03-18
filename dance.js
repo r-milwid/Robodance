@@ -106,6 +106,9 @@ async function startDance() {
   robot.style.transform = 'translateX(-50%)';
   document.body.appendChild(robot);
 
+  // Show "Sound on!" speech bubble during curtain open
+  setRobotSpeech(robot, 'Sound on!');
+
   // Force layout
   void curtainLeft.offsetWidth;
 
@@ -162,6 +165,7 @@ async function startDance() {
   };
 
   // Walking (moonwalk)
+  setRobotSpeech(robot, '');
   setRobotMotion(robot, 'walking');
   await Promise.all([
     moveRobotTo(0.25, walkIntroDuration),
