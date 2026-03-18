@@ -60,7 +60,7 @@ body {
   inset: 0;
   background-image: url('assets/robot-transition-stage-scene-2.png');
   background-position: center bottom;
-  background-size: cover;
+  background-size: 100% 100%;
   background-repeat: no-repeat;
 }
 .robot-runner {
