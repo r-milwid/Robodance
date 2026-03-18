@@ -373,10 +373,10 @@ html, body {
   animation: robotMoonwalkFrontLeg 1.1s linear infinite;
 }
 .robot-runner.walking .robot-arm-left {
-  transform: rotate(-65deg);
+  transform: rotate(65deg);
 }
 .robot-runner.walking .robot-arm-right {
-  transform: rotate(-48deg);
+  transform: rotate(-70deg);
 }
 .robot-runner.walking .robot-runner-inner {
   animation: robotMoonwalkBase 1.1s linear infinite;
@@ -418,11 +418,11 @@ html, body {
   opacity: 1;
 }
 .robot-runner.walking .robot-head::after {
-  left: -5px;
-  top: 5px;
-  width: 6px;
-  height: 10px;
-  border-radius: 5px 0 0 5px;
+  left: -3px;
+  top: 8px;
+  width: 4px;
+  height: 4px;
+  border-radius: 3px 0 0 3px;
   background: linear-gradient(180deg, #5d697d 0%, #364051 100%);
   box-shadow: inset 1px 0 0 rgba(0,0,0,.14);
   opacity: 1;
@@ -437,11 +437,7 @@ html, body {
   transform: translateX(-50%) rotate(11deg) skewX(6deg);
 }
 .robot-runner.walking .robot-body::before {
-  width: 6px;
-  height: 10px;
-  top: 4px;
-  border-radius: 4px;
-  background: linear-gradient(145deg, var(--robot-accent-strong) 0%, var(--robot-accent) 72%, var(--robot-accent-cool) 100%);
+  display: none;
 }
 .robot-runner.walking .robot-body::after {
   bottom: 5px;
@@ -456,7 +452,7 @@ html, body {
   border-radius: 999px;
 }
 .robot-runner.walking .robot-arm::after {
-  height: 11px;
+  height: 13px;
   border-radius: 999px;
   opacity: 1;
 }
@@ -471,6 +467,7 @@ html, body {
   left: 21px;
   right: auto;
   z-index: 4;
+  height: 15px;
 }
 .robot-runner.walking .robot-leg {
   bottom: 2px;
@@ -478,10 +475,17 @@ html, body {
   height: 14px;
   border-radius: 999px;
 }
+.robot-runner.walking .robot-leg::before {
+  display: none;
+}
 .robot-runner.walking .robot-leg::after {
   height: 15px;
-  border-radius: 999px;
+  border-radius: 999px 999px 2px 2px;
   opacity: 1;
+  box-shadow:
+    inset 0 -5px 1px -1px #1e1e1e,
+    inset 0 -2px 0 0 #080808,
+    inset 0 -1px 0 0 rgba(255,255,255,.07);
 }
 .robot-runner.walking .robot-leg-left {
   left: 15px;
@@ -496,10 +500,11 @@ html, body {
   z-index: 3;
 }
 .robot-runner.walking .robot-arm-left::after {
-  transform: translateX(-50%) rotate(45deg);
+  transform: translateX(-50%) rotate(85deg);
 }
 .robot-runner.walking .robot-arm-right::after {
-  transform: translateX(-50%) rotate(35deg);
+  transform: translateX(-50%) rotate(100deg);
+  height: 12px;
 }
 .robot-runner.walking .robot-leg-left::after {
   animation: robotMoonwalkRearLegLower 1.1s linear infinite;

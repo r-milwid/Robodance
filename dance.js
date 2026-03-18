@@ -32,12 +32,10 @@ function createRobotTransitionScene() {
 
 function positionRobotTransitionScene(scene) {
   if (!scene) return;
-  const width = window.innerWidth;
-  const height = window.innerHeight;
-  scene.style.left = '0px';
-  scene.style.right = '0px';
-  scene.style.width = width + 'px';
-  scene.style.height = height + 'px';
+  scene.style.left = '0';
+  scene.style.right = '0';
+  scene.style.width = '100%';
+  scene.style.height = '100%';
 }
 
 function setRobotSpeech(robot, text = '') {
@@ -83,6 +81,15 @@ async function startDance() {
   const robotHeight = 160;
   const robotBaselineLift = Math.round(robotHeight * 0.5);
 
+  // ── Curtain opening ──────────────────────────────────────────
+  // Curtains appended FIRST so they cover the viewport before robot/stage render
+  const curtainLeft = document.createElement('div');
+  curtainLeft.className = 'curtain curtain-left';
+  const curtainRight = document.createElement('div');
+  curtainRight.className = 'curtain curtain-right';
+  document.body.appendChild(curtainLeft);
+  document.body.appendChild(curtainRight);
+
   // Create and position the stage — visible from the start (behind curtains)
   const stageScene = createRobotTransitionScene();
   positionRobotTransitionScene(stageScene);
@@ -103,14 +110,6 @@ async function startDance() {
   robot.style.transform = 'translateX(-50%)';
   document.body.appendChild(robot);
 
-  // ── Curtain opening ──────────────────────────────────────────
-  const curtainLeft = document.createElement('div');
-  curtainLeft.className = 'curtain curtain-left';
-  const curtainRight = document.createElement('div');
-  curtainRight.className = 'curtain curtain-right';
-  document.body.appendChild(curtainLeft);
-  document.body.appendChild(curtainRight);
-
   // Force layout
   void curtainLeft.offsetWidth;
 
@@ -122,7 +121,12 @@ async function startDance() {
   curtainLeft.style.width = '20px';
   curtainRight.style.width = '20px';
 
-  await wait(curtainOpenDuration);
+  // Switch to Smooth Criminal 500ms before curtains finish opening
+  await wait(curtainOpenDuration - 500);
+  audioGameOver.pause();
+  audioGameOver.currentTime = 0;
+  audioSmoothCriminal.play().catch(() => {});
+  await wait(500);
 
   // Quickly fade out the remaining 20px slivers (non-blocking — dance starts now)
   curtainLeft.style.transition = `opacity ${curtainFadeDuration}ms ease-out`;
@@ -163,6 +167,11 @@ async function startDance() {
     moveRobotTo(0.25, walkIntroDuration),
     wait(walkIntroDuration),
   ]);
+
+  // Switch to Dance Attack after moonwalk
+  audioSmoothCriminal.pause();
+  audioSmoothCriminal.currentTime = 0;
+  audioDanceAttack.play().catch(() => {});
 
   // Head spin
   setRobotMotion(robot, 'headspinning');
@@ -248,6 +257,9 @@ async function startDance() {
   await wait(1500); // 3 waves at 0.5s each
 
   // ── Outro: Curtains close ────────────────────────────────
+  audioDanceAttack.pause();
+  audioDanceAttack.currentTime = 0;
+
   setRobotMotion(robot, null);
   setRobotSpeech(robot, '');
 
@@ -277,7 +289,19 @@ async function startDance() {
   robot.remove();
 }
 
+// ── Music ────────────────────────────────────────────────────
+function createAudio(src) {
+  const audio = new Audio(src);
+  audio.loop = true;
+  return audio;
+}
+
+const audioGameOver = createAudio('assets/Game Over.mp3');
+const audioSmoothCriminal = createAudio('assets/Smooth Criminal.mp3');
+const audioDanceAttack = createAudio('assets/Dance Attack.mp3');
+
 // Auto-start after a short delay to let the page render
 window.addEventListener('DOMContentLoaded', () => {
+  audioGameOver.play().catch(() => {});
   setTimeout(startDance, 600);
 });
