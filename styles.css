@@ -114,6 +114,15 @@ html, body {
   transform: rotate(45deg);
   border-radius: 2px;
 }
+.robot-speech-bubble.right {
+  left: calc(100% + 8px);
+  right: auto;
+  transform-origin: left bottom;
+}
+.robot-speech-bubble.right::before {
+  left: -6px;
+  right: auto;
+}
 .robot-speech-bubble.visible {
   opacity: 1;
   transform: scale(1);

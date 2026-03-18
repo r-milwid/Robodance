@@ -38,12 +38,13 @@ function positionRobotTransitionScene(scene) {
   scene.style.height = '100%';
 }
 
-function setRobotSpeech(robot, text = '') {
+function setRobotSpeech(robot, text = '', side = 'left') {
   if (!robot) return;
   const bubble = robot.querySelector('.robot-speech-bubble');
   if (!bubble) return;
   bubble.textContent = text;
   bubble.classList.toggle('visible', !!text);
+  bubble.classList.toggle('right', side === 'right');
   bubble.setAttribute('aria-hidden', text ? 'false' : 'true');
 }
 
@@ -107,7 +108,7 @@ async function startDance() {
   document.body.appendChild(robot);
 
   // Show "Sound on!" speech bubble during curtain open
-  setRobotSpeech(robot, 'Sound on!');
+  setRobotSpeech(robot, 'Sound on!', 'right');
 
   // Force layout
   void curtainLeft.offsetWidth;
