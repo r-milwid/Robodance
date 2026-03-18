@@ -76,6 +76,14 @@ function wait(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+// Play a sound effect, duck background music to 50%, restore on end
+function playSfx(sfx, bg) {
+  bg.volume = 0.5;
+  sfx.currentTime = 0;
+  sfx.play().catch(() => {});
+  sfx.addEventListener('ended', () => { bg.volume = 1.0; }, { once: true });
+}
+
 // ── Main choreography ────────────────────────────────────────
 async function startDance() {
   const robotWidth = 120;
@@ -125,16 +133,16 @@ async function startDance() {
   curtainLeft.style.width = '20px';
   curtainRight.style.width = '20px';
 
-  // Switch to Who's Bad 500ms before curtains finish opening
+  // Switch to Michael 500ms before curtains finish opening
   await wait(curtainOpenDuration - 500);
   audioTitleScreen.pause();
   audioTitleScreen.currentTime = 0;
-  audioWhosBad.play().catch(() => {});
+  audioMichael.play().catch(() => {});
   await wait(500);
 
-  // Wait for Who's Bad to finish, then start Bad
+  // Wait for Michael to finish, then start Beat It
   await wait(1200);
-  audioBad.play().catch(() => {});
+  audioBeatIt.play().catch(() => {});
 
   // Quickly fade out the remaining 20px slivers (non-blocking — dance starts now)
   curtainLeft.style.transition = `opacity ${curtainFadeDuration}ms ease-out`;
@@ -177,18 +185,23 @@ async function startDance() {
     wait(walkIntroDuration),
   ]);
 
-  // Head spin
+  // Head spin (play Oh)
+  playSfx(audioOh, audioBeatIt);
   setRobotMotion(robot, 'headspinning');
   await wait(headspinDuration);
 
-  // Cartwheel
+  // Cartwheel (play Hoo)
+  playSfx(audioHoo, audioBeatIt);
   setRobotMotion(robot, 'cartwheeling');
   await Promise.all([
     moveRobotTo(0.5, slideToFloorDuration),
     wait(slideToFloorDuration),
   ]);
 
-  // Floor move
+  // Floor move (play Uuuuh timed to finish with the move — ~1344ms duration)
+  const uuuuhDuration = 1344;
+  const uuuuhDelay = Math.max(0, floorMoveDuration - uuuuhDuration);
+  setTimeout(() => playSfx(audioUuuuh, audioBeatIt), uuuuhDelay);
   setRobotMotion(robot, 'floormove');
   await Promise.all([
     moveRobotTo(0.75, floorMoveDuration),
@@ -229,12 +242,14 @@ async function startDance() {
     await moveRobotTopTo(nextTop, burst.duration, burst.easing);
   }
 
-  // Fall
+  // Fall (play Sha)
   const fallDuration = 950;
+  playSfx(audioSha, audioBeatIt);
   setRobotMotion(robot, 'fallen');
   await moveRobotTopTo(danceBaselineY, fallDuration, 'cubic-bezier(0.22, 0.78, 0.18, 1.08)');
 
-  // Stand up slowly
+  // Stand up slowly (play Aaow)
+  playSfx(audioAaow, audioBeatIt);
   const standDuration = 1700;
   setRobotMotion(robot, 'standingupslow');
   await wait(standDuration);
@@ -258,9 +273,9 @@ async function startDance() {
   setRobotSpeech(robot, '');
 
   setRobotMotion(robot, 'waving');
-  await wait(500); // Stop Bad 1s early (was 1500ms)
-  audioBad.pause();
-  audioBad.currentTime = 0;
+  await wait(500); // Stop Beat It 1s early (was 1500ms)
+  audioBeatIt.pause();
+  audioBeatIt.currentTime = 0;
   audioWhosBad.currentTime = 0;
   audioWhosBad.play().catch(() => {});
   await wait(1700); // Let Who's Bad finish (~1.7s)
@@ -304,9 +319,21 @@ function createAudio(src) {
 }
 
 const audioTitleScreen = createAudio('assets/Title Screen.mp3');
+const audioMichael = createAudio('assets/Michael.mp3');
+audioMichael.loop = false;
+const audioBeatIt = createAudio('assets/Beat It.mp3');
+const audioOh = createAudio('assets/Oh.mp3');
+audioOh.loop = false;
+const audioHoo = createAudio('assets/Hoo.mp3');
+audioHoo.loop = false;
+const audioUuuuh = createAudio('assets/Uuuuh.mp3');
+audioUuuuh.loop = false;
+const audioSha = createAudio('assets/Sha.mp3');
+audioSha.loop = false;
+const audioAaow = createAudio('assets/Aaow.mp3');
+audioAaow.loop = false;
 const audioWhosBad = createAudio("assets/Who's Bad.mp3");
 audioWhosBad.loop = false;
-const audioBad = createAudio('assets/Bad.mp3');
 
 // Wait for the viewport to have stable dimensions (handles iframe loading/transitions)
 function waitForStableDimensions(callback, maxWait = 3000) {
