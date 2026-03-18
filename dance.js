@@ -117,12 +117,16 @@ async function startDance() {
   curtainLeft.style.width = '20px';
   curtainRight.style.width = '20px';
 
-  // Switch to Smooth Criminal 500ms before curtains finish opening
+  // Switch to Who's Bad 500ms before curtains finish opening
   await wait(curtainOpenDuration - 500);
   audioTitleScreen.pause();
   audioTitleScreen.currentTime = 0;
-  audioBad.play().catch(() => {});
+  audioWhosBad.play().catch(() => {});
   await wait(500);
+
+  // Wait for Who's Bad to finish, then start Bad
+  await wait(1200);
+  audioBad.play().catch(() => {});
 
   // Quickly fade out the remaining 20px slivers (non-blocking — dance starts now)
   curtainLeft.style.transition = `opacity ${curtainFadeDuration}ms ease-out`;
@@ -163,11 +167,6 @@ async function startDance() {
     moveRobotTo(0.25, walkIntroDuration),
     wait(walkIntroDuration),
   ]);
-
-  // Switch to Dance Attack after moonwalk
-  audioBad.pause();
-  audioBad.currentTime = 0;
-  audioDanceAttack.play().catch(() => {});
 
   // Head spin
   setRobotMotion(robot, 'headspinning');
@@ -250,12 +249,14 @@ async function startDance() {
   setRobotSpeech(robot, '');
 
   setRobotMotion(robot, 'waving');
-  await wait(1500); // 3 waves at 0.5s each
+  await wait(500); // Stop Bad 1s early (was 1500ms)
+  audioBad.pause();
+  audioBad.currentTime = 0;
+  audioWhosBad.currentTime = 0;
+  audioWhosBad.play().catch(() => {});
+  await wait(1700); // Let Who's Bad finish (~1.7s)
 
   // ── Outro: Curtains close ────────────────────────────────
-  audioDanceAttack.pause();
-  audioDanceAttack.currentTime = 0;
-
   setRobotMotion(robot, null);
   setRobotSpeech(robot, '');
 
@@ -293,8 +294,9 @@ function createAudio(src) {
 }
 
 const audioTitleScreen = createAudio('assets/Title Screen.mp3');
+const audioWhosBad = createAudio("assets/Who's Bad.mp3");
+audioWhosBad.loop = false;
 const audioBad = createAudio('assets/Bad.mp3');
-const audioDanceAttack = createAudio('assets/Dance Attack.mp3');
 
 // Auto-start after a short delay to let the page render
 window.addEventListener('DOMContentLoaded', () => {
