@@ -119,9 +119,9 @@ async function startDance() {
 
   // Switch to Smooth Criminal 500ms before curtains finish opening
   await wait(curtainOpenDuration - 500);
-  audioGameOver.pause();
-  audioGameOver.currentTime = 0;
-  audioSmoothCriminal.play().catch(() => {});
+  audioTitleScreen.pause();
+  audioTitleScreen.currentTime = 0;
+  audioBad.play().catch(() => {});
   await wait(500);
 
   // Quickly fade out the remaining 20px slivers (non-blocking — dance starts now)
@@ -165,8 +165,8 @@ async function startDance() {
   ]);
 
   // Switch to Dance Attack after moonwalk
-  audioSmoothCriminal.pause();
-  audioSmoothCriminal.currentTime = 0;
+  audioBad.pause();
+  audioBad.currentTime = 0;
   audioDanceAttack.play().catch(() => {});
 
   // Head spin
@@ -292,12 +292,12 @@ function createAudio(src) {
   return audio;
 }
 
-const audioGameOver = createAudio('assets/Game Over.mp3');
-const audioSmoothCriminal = createAudio('assets/Smooth Criminal.mp3');
+const audioTitleScreen = createAudio('assets/Title Screen.mp3');
+const audioBad = createAudio('assets/Bad.mp3');
 const audioDanceAttack = createAudio('assets/Dance Attack.mp3');
 
 // Auto-start after a short delay to let the page render
 window.addEventListener('DOMContentLoaded', () => {
-  audioGameOver.play().catch(() => {});
+  audioTitleScreen.play().catch(() => {});
   setTimeout(startDance, 600);
 });
