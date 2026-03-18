@@ -34,7 +34,7 @@ function positionRobotTransitionScene(scene) {
   if (!scene) return;
   scene.style.left = '0';
   scene.style.right = '0';
-  scene.style.width = '100%';
+  scene.style.width = '';   // let left+right define width (works correctly in iframes)
   scene.style.height = '100%';
 }
 
@@ -93,6 +93,10 @@ async function startDance() {
   stageScene.style.opacity = '1';
   stageScene.style.transform = 'translateY(0)';
   document.body.appendChild(stageScene);
+
+  // Re-position stage on resize (e.g., host panel state change resizes iframe)
+  const onResize = () => positionRobotTransitionScene(stageScene);
+  window.addEventListener('resize', onResize);
 
   // Position robot near the bottom of the viewport, above the stage floor.
   const fullBottomGap = 24 + robotBaselineLift;
@@ -287,6 +291,7 @@ async function startDance() {
   await wait(curtainCloseDuration);
 
   // Cleanup (everything is hidden behind curtains now)
+  window.removeEventListener('resize', onResize);
   stageScene.remove();
   robot.remove();
 }
@@ -303,8 +308,20 @@ const audioWhosBad = createAudio("assets/Who's Bad.mp3");
 audioWhosBad.loop = false;
 const audioBad = createAudio('assets/Bad.mp3');
 
-// Auto-start after a short delay to let the page render
+// Wait for the viewport to have stable dimensions (handles iframe loading/transitions)
+function waitForStableDimensions(callback, maxWait = 3000) {
+  let lastWidth = 0, stableCount = 0;
+  const start = Date.now();
+  (function check() {
+    const w = window.innerWidth;
+    stableCount = (w > 0 && w === lastWidth) ? stableCount + 1 : 0;
+    lastWidth = w;
+    if (stableCount >= 3 || Date.now() - start > maxWait) callback();
+    else requestAnimationFrame(check);
+  })();
+}
+
 window.addEventListener('DOMContentLoaded', () => {
   audioTitleScreen.play().catch(() => {});
-  setTimeout(startDance, 600);
+  waitForStableDimensions(() => setTimeout(startDance, 200));
 });
