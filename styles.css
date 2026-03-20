@@ -41,6 +41,85 @@ body {
   background-image: url('assets/Curtain Right.png');
 }
 
+/* ── Show intro overlay ──────────────────────────────────────── */
+.show-intro-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 420;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: rgba(15, 17, 26, 0.14);
+  backdrop-filter: blur(1px) saturate(110%);
+  -webkit-backdrop-filter: blur(1px) saturate(110%);
+  pointer-events: none;
+}
+
+.show-intro-modal {
+  width: min(92vw, 440px);
+  padding: 26px 24px 22px;
+  border-radius: 24px;
+  background: linear-gradient(180deg, #f4efe6 0%, #ece5d7 100%);
+  color: #171a23;
+  text-align: center;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.28);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+.show-intro-kicker {
+  font: 700 13px/1.2 var(--font);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #4a4f5e;
+}
+
+.show-intro-kicker [data-countdown] {
+  display: inline-block;
+  min-width: 1ch;
+  margin-left: 4px;
+  font-size: 2.9em;
+  line-height: 0.92;
+  letter-spacing: -0.05em;
+  color: #11131a;
+  vertical-align: middle;
+}
+
+.show-intro-copy {
+  margin-top: 12px;
+  font: 500 15px/1.45 var(--font);
+  color: #242938;
+}
+
+.show-intro-copy + .show-intro-copy {
+  margin-top: 8px;
+}
+
+@media (max-width: 480px) {
+  .show-intro-overlay {
+    padding: 16px;
+  }
+
+  .show-intro-modal {
+    width: min(100%, 360px);
+    padding: 22px 18px 18px;
+    border-radius: 20px;
+  }
+
+  .show-intro-kicker {
+    font-size: 12px;
+  }
+
+  .show-intro-kicker [data-countdown] {
+    font-size: 2.5em;
+  }
+
+  .show-intro-copy {
+    font-size: 14px;
+    line-height: 1.4;
+  }
+}
+
 /* ── Robot runner animation ──────────────────────────────────── */
 .robot-transition-scene {
   position: absolute;

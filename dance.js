@@ -76,6 +76,66 @@ function wait(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+const introCountdownSeconds = 10;
+let introCountdownDone = false;
+let introDimensionsReady = false;
+let introShowStarted = false;
+
+function getIntroOverlay() {
+  return document.querySelector('.show-intro-overlay');
+}
+
+function getIntroCountdownElement() {
+  return document.querySelector('[data-countdown]');
+}
+
+function hideIntroOverlay() {
+  const overlay = getIntroOverlay();
+  if (!overlay) return;
+
+  overlay.hidden = true;
+  overlay.setAttribute('aria-hidden', 'true');
+  overlay.style.display = 'none';
+}
+
+function startIntroShow() {
+  if (introShowStarted) return;
+  introShowStarted = true;
+
+  hideIntroOverlay();
+  audioTitleScreen.currentTime = 0;
+  audioTitleScreen.play().catch(() => {});
+  startDance();
+}
+
+function maybeStartIntroShow() {
+  if (!introCountdownDone || !introDimensionsReady || introShowStarted) return;
+  startIntroShow();
+}
+
+function startIntroCountdown() {
+  const countdownElement = getIntroCountdownElement();
+  let remaining = introCountdownSeconds;
+
+  if (countdownElement) {
+    countdownElement.textContent = String(remaining);
+  }
+
+  const timerId = window.setInterval(() => {
+    remaining -= 1;
+
+    if (countdownElement) {
+      countdownElement.textContent = String(Math.max(remaining, 0));
+    }
+
+    if (remaining <= 0) {
+      window.clearInterval(timerId);
+      introCountdownDone = true;
+      maybeStartIntroShow();
+    }
+  }, 1000);
+}
+
 // Play a sound effect, duck background music to 50%, restore on end
 function playSfx(sfx, bg) {
   bg.volume = 0.5;
@@ -349,6 +409,9 @@ function waitForStableDimensions(callback, maxWait = 3000) {
 }
 
 window.addEventListener('DOMContentLoaded', () => {
-  audioTitleScreen.play().catch(() => {});
-  waitForStableDimensions(() => setTimeout(startDance, 200));
+  startIntroCountdown();
+  waitForStableDimensions(() => {
+    introDimensionsReady = true;
+    maybeStartIntroShow();
+  });
 });
