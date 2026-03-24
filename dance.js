@@ -1,5 +1,5 @@
 // ── Robot Dance – standalone choreography ────────────────────
-// Extracted from trengo-analytics-prototype/admin-assistant.js
+// Extracted from test-analytics-prototype/admin-assistant.js
 // Stripped of onboarding/FAB dependencies for standalone playback.
 
 function createRobotElement() {
